@@ -13,21 +13,102 @@ class Program
         return employees;
     }
 
+    static void Print2DArray(double[,] array)
+    {
+        int rows = array.GetLength(0);
+        int cols = array.GetLength(1);
+
+        Console.WriteLine($"--------------------");
+
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                Console.Write(array[i, j] + "\t"); // Print each element with a tab for formatting
+            }
+
+            Console.WriteLine(); // New line after each row
+        }
+    }
+
+    static void printArray(double[] array)
+    {
+        int rows = array.Length;
+        for (int i = 0; i < rows; i++)
+        {
+            Console.Write(array[i] + "\t");
+        }
+
+        Console.WriteLine();
+    }
+
     static void Main(string[] args)
     {
         List<Employee> employees = getData();
 
         // Number of clusters (k)
-        int k = 4;
+        int clusterCount = 4;
+        // Number of actions (a)
+        int actionCount = 4;
 
         // Instantiate the KMeans class and run the algorithm
-        KMeans kMeans = new KMeans(4, employees);
+        KMeans kMeans = new KMeans(clusterCount, employees);
         kMeans.ClassifyEmployees();
-        Console.WriteLine($"0.4655 {kMeans.GetClusterClassification(0.4655)}");
-        Console.WriteLine($"0.505 {kMeans.GetClusterClassification(0.505)}");
-        Console.WriteLine($"0.707 {kMeans.GetClusterClassification(0.707)}");
-        Console.WriteLine($"0.7715 {kMeans.GetClusterClassification(0.7715)}");
-        Console.WriteLine($"0.5155 A7 {kMeans.GetClusterClassification(0.5155)}");
-        Console.WriteLine($"0.8055 A7 {kMeans.GetClusterClassification(0.8055)}");
+
+        int sampleSize = 5;
+        int samplingRate = 10;
+        // action
+        double[,] transitionMatrix = new double[actionCount, actionCount];
+        for (int k = 0; k < clusterCount; k++) // classification
+        {
+            var randomGenerator = new RandomGenerator();
+            var clusters = kMeans.getClusters();
+            int[,] array = new int[1, k];
+            double[] classificationProbabilities = new double[clusterCount];
+            double[,] newClassification = new double[clusterCount, samplingRate];
+            for (int i = 0; i < samplingRate; i++)
+            {
+                var sampleClassification = new double[clusterCount];
+                for (int j = 0; j < sampleSize; j++)
+                {
+                    var randomIndex = randomGenerator.GetRandomInt(0, clusters[k].Count);
+                    var employee = clusters[k][randomIndex];
+                    var motivationTarget = $"MotivationA{k}";
+                    var propertyInfo = employee.GetType().GetProperty(motivationTarget);
+                    var newEmployeeClassification =
+                        kMeans.GetClusterClassification(employee.MotivationA1); //follow action
+                    sampleClassification[newEmployeeClassification] += 1;
+                }
+
+                for (int l = 0; l < clusterCount; l++)
+                {
+                    newClassification[l, i] = sampleClassification[l] / 5;
+                }
+            }
+
+            // Print2DArray(newClassification);
+            for (int m = 0; m < clusterCount; m++)
+            {
+                double sum = 0.0;
+                for (int o = 0; o < samplingRate; o++)
+                {
+                    sum += newClassification[m, o];
+                }
+
+                classificationProbabilities[m] = sum / samplingRate;
+                transitionMatrix[k, m] = sum / samplingRate;
+            }
+
+            // printArray(classificationProbabilities);
+        }
+        
+        Print2DArray(transitionMatrix);
+
+
+        // TO DO:  for each action
+        // get random people from each classification
+        // check what are they new classification,
+        // sum and calculate probabilities
+        // build matrix
     }
 }

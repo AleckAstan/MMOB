@@ -22,6 +22,11 @@ public class KMeans
         }
     }
 
+    public List<Employee>[]  getClusters()
+    {
+        return _clusters;
+    }
+
     public void ClassifyEmployees()
     {
         InitializeCentroids();
@@ -136,7 +141,6 @@ public class KMeans
         for (int i = 0; i < _k; i++)
         {
             double averageMotivation = _clusters[i].Average(e => e.CurrentMotivation);
-            Console.WriteLine(averageMotivation);
             clusterAverages.Add((i, averageMotivation));
         }
 
@@ -149,15 +153,7 @@ public class KMeans
         {
             sortedClusters[i] = _clusters[clusterAverages[i].Index];
         }
-
         var labels = new string[] { "Unmotivated", "Less Motivated", "Motivated", "Very Motivated" };
-        for (int i = 0; i < _k; i++)
-        {
-            var currentClusterName = labels[i];
-            var currentCluster = sortedClusters[i];
-            Console.WriteLine($"{currentCluster[0]} in {currentClusterName}");
-        }
-
         _clusters = sortedClusters;
     }
 }
