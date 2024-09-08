@@ -23,16 +23,16 @@ public class CsvReader
                 {
                     var line = reader.ReadLine();
                     var values = line.Split(',');
-                    Console.WriteLine($"line: {line}");
 
                     var employee = new Employee
                     {
                         Id = int.Parse(values[0]),
                         Name = values[1],
-                        Age = double.Parse(values[2])
-                        // Id = 1,
-                        // Name ="Hasina",
-                        // Age = 26
+                        CurrentMotivation = double.Parse(values[4]),
+                        MotivationA1 = double.Parse(values[5]),
+                        MotivationA2 = double.Parse(values[6]),
+                        MotivationA3 = double.Parse(values[7]),
+                        MotivationA4 = double.Parse(values[9]),
                     };
 
                     employees.Add(employee);

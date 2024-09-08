@@ -4,10 +4,14 @@ public class Employee
 {
     public int Id { get; set; }
     public string Name { get; set; }
-    public double Age { get; set; }
+    public double CurrentMotivation { get; set; }
+    public double MotivationA1 { get; set; }
+    public double MotivationA2 { get; set; }
+    public double MotivationA3 { get; set; }
+    public double MotivationA4 { get; set; }
     
     public override string ToString()
     {
-        return $"Id: {Id}, Name: {Name}, Age: {Age}";
+        return $"Id: {Id}, Name: {Name}, CurrentMotivation: {CurrentMotivation}";
     }
 }

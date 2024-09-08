@@ -1,82 +1,164 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MiniProjet_M2.Models;
 
 public class KMeans
 {
-    private int _k; // Number of clusters
-    private double[] _centroids; // Centroids of the clusters
+    private int _k;
+    private List<Employee> _employees;
+    private double[] _centroids;
+    private List<Employee>[] _clusters;
 
-    public KMeans(int k)
+    public KMeans(int k, List<Employee> employees)
     {
         _k = k;
-        _centroids = new double[k];
-    }
-
-    // Euclidean distance calculation for 1D
-    private double EuclideanDistance(double point1, double point2)
-    {
-        return Math.Abs(point1 - point2);
-    }
-
-    // Fit the model to the dataset
-    public int[] Fit(List<double> dataPoints, int maxIterations = 100)
-    {
-        int n = dataPoints.Count;
-        int[] labels = new int[n]; // Cluster labels for each point
-        Random random = new Random();
-
-        // Randomly initialize centroids
+        _employees = employees;
+        _centroids = new double[_k];
+        _clusters = new List<Employee>[_k];
         for (int i = 0; i < _k; i++)
         {
-            _centroids[i] = dataPoints[random.Next(n)];
+            _clusters[i] = new List<Employee>();
         }
+    }
 
-        bool hasConverged = false;
-        int iteration = 0;
+    public void ClassifyEmployees()
+    {
+        InitializeCentroids();
+        bool centroidsChanged;
 
-        while (!hasConverged && iteration < maxIterations)
+        do
         {
-            hasConverged = true;
+            AssignToClusters();
+            centroidsChanged = UpdateCentroids();
+        } while (centroidsChanged);
 
-            // Assign each point to the nearest centroid
-            for (int i = 0; i < n; i++)
+        SortClusters();
+    }
+
+    private void InitializeCentroids()
+    {
+        // Randomly pick k centroids from the employees' CurrentMotivation values
+        Random rand = new Random();
+        HashSet<int> chosenIndexes = new HashSet<int>();
+        for (int i = 0; i < _k; i++)
+        {
+            int index;
+            do
             {
-                double minDist = double.MaxValue;
-                int closestCentroid = 0;
+                index = rand.Next(_employees.Count);
+            } while (chosenIndexes.Contains(index));
 
-                for (int j = 0; j < _k; j++)
-                {
-                    double dist = EuclideanDistance(dataPoints[i], _centroids[j]);
-                    if (dist < minDist)
-                    {
-                        minDist = dist;
-                        closestCentroid = j;
-                    }
-                }
+            chosenIndexes.Add(index);
+            _centroids[i] = _employees[index].CurrentMotivation;
+        }
+    }
 
-                // Update cluster assignment if necessary
-                if (labels[i] != closestCentroid)
-                {
-                    labels[i] = closestCentroid;
-                    hasConverged = false;
-                }
-            }
-
-            // Update centroids
-            for (int j = 0; j < _k; j++)
-            {
-                var pointsInCluster = dataPoints.Where((p, index) => labels[index] == j).ToList();
-
-                if (pointsInCluster.Any())
-                {
-                    _centroids[j] = pointsInCluster.Average();
-                }
-            }
-
-            iteration++;
+    private void AssignToClusters()
+    {
+        // Clear previous clusters
+        for (int i = 0; i < _k; i++)
+        {
+            _clusters[i].Clear();
         }
 
-        return labels;
+        foreach (var employee in _employees)
+        {
+            int closestCentroidIndex = GetClosestCentroidIndex(employee.CurrentMotivation);
+            _clusters[closestCentroidIndex].Add(employee);
+        }
+    }
+
+    private bool UpdateCentroids()
+    {
+        bool centroidsChanged = false;
+
+        for (int i = 0; i < _k; i++)
+        {
+            if (_clusters[i].Count == 0)
+                continue; // Avoid division by zero
+
+            double newCentroid = _clusters[i].Average(e => e.CurrentMotivation);
+            if (Math.Abs(newCentroid - _centroids[i]) > 0.0001)
+                centroidsChanged = true;
+
+            _centroids[i] = newCentroid;
+        }
+
+        return centroidsChanged;
+    }
+
+    private int GetClosestCentroidIndex(double value)
+    {
+        double minDistance = double.MaxValue;
+        int closestIndex = 0;
+
+        for (int i = 0; i < _k; i++)
+        {
+            double distance = Math.Abs(value - _centroids[i]);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                closestIndex = i;
+            }
+        }
+
+        return closestIndex;
+    }
+
+    private double GetClusterCenterIndex(List<Employee> cluster)
+    {
+        var firstElement = cluster[0].CurrentMotivation;
+        var lastElement = cluster[cluster.Count - 1].CurrentMotivation;
+        return (firstElement + lastElement) / 2;
+    }
+
+    public int GetClusterClassification(double value)
+    {
+        var minDistance = Math.Abs(value - GetClusterCenterIndex(_clusters[0]));
+        var clusterIndex = 0;
+        for (int i = 1; i < _k; i++)
+        {
+            double distance = Math.Abs(value - GetClusterCenterIndex(_clusters[i]));
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                clusterIndex = i;
+            }
+        }
+
+        return clusterIndex;
+    }
+
+    private void SortClusters()
+    {
+        // Create a list of tuples containing cluster index and average motivation
+        var clusterAverages = new List<(int Index, double AverageMotivation)>();
+        for (int i = 0; i < _k; i++)
+        {
+            double averageMotivation = _clusters[i].Average(e => e.CurrentMotivation);
+            Console.WriteLine(averageMotivation);
+            clusterAverages.Add((i, averageMotivation));
+        }
+
+        // Sort clusters based on average motivation
+        clusterAverages = clusterAverages.OrderBy(c => c.AverageMotivation).ToList();
+
+        // Reorder clusters based on sorted indices
+        var sortedClusters = new List<Employee>[_k];
+        for (int i = 0; i < _k; i++)
+        {
+            sortedClusters[i] = _clusters[clusterAverages[i].Index];
+        }
+
+        var labels = new string[] { "Unmotivated", "Less Motivated", "Motivated", "Very Motivated" };
+        for (int i = 0; i < _k; i++)
+        {
+            var currentClusterName = labels[i];
+            var currentCluster = sortedClusters[i];
+            Console.WriteLine($"{currentCluster[0]} in {currentClusterName}");
+        }
+
+        _clusters = sortedClusters;
     }
 }
