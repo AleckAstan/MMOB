@@ -12,7 +12,7 @@ class Program
         };
 
         // Number of clusters (k)
-        int k = 3;
+        int k = 4;
 
         // Instantiate the KMeans class and run the algorithm
         KMeans kMeans = new KMeans(k);
