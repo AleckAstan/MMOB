@@ -2,42 +2,17 @@
 using System.Collections.Generic;
 using MiniProjet_M2.Helpers;
 using MiniProjet_M2.Models;
+using MiniProjet_M2.Utils;
 
 class Program
 {
     private static string DATA_PATH = "../../../Assets/Data/employee_data.csv";
+    static Printer printer = new Printer();
 
     static List<Employee> getData()
     {
         List<Employee> employees = CsvReader.ReadCsvFile(DATA_PATH);
         return employees;
-    }
-
-    static void Print2DArray(double[,] array)
-    {
-        int rows = array.GetLength(0);
-        int cols = array.GetLength(1);
-        Console.WriteLine($"----------------------------------------------------------");
-        for (int i = 0; i < rows; i++)
-        {
-            for (int j = 0; j < cols; j++)
-            {
-                Console.Write(array[i, j] + "\t");
-            }
-
-            Console.WriteLine();
-        }
-    }
-
-    static void printArray(double[] array)
-    {
-        int rows = array.Length;
-        for (int i = 0; i < rows; i++)
-        {
-            Console.Write(array[i] + "\t");
-        }
-
-        Console.WriteLine();
     }
 
     static void Main(string[] args)
@@ -85,7 +60,6 @@ class Program
                         newClassification[l, i] = sampleClassification[l] / sampleSize;
                     }
                 }
-
                 for (int m = 0; m < clusterCount; m++)
                 {
                     double sum = 0.0;
@@ -93,14 +67,13 @@ class Program
                     {
                         sum += newClassification[m, o];
                     }
-
-                    classificationProbabilities[m] = sum / samplingRate;
-                    transitionMatrix[k, m] = sum / samplingRate;
+                    double probability =Math.Round(sum / samplingRate,2);
+                    classificationProbabilities[m] = probability;
+                    transitionMatrix[k, m] = probability;
                 }
                 // printArray(classificationProbabilities);
             }
-
-            Print2DArray(transitionMatrix);
+            printer.print2DArray(transitionMatrix);
         }
     }
 }
