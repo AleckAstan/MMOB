@@ -17,17 +17,15 @@ class Program
     {
         int rows = array.GetLength(0);
         int cols = array.GetLength(1);
-
-        Console.WriteLine($"--------------------");
-
+        Console.WriteLine($"----------------------------------------------------------");
         for (int i = 0; i < rows; i++)
         {
             for (int j = 0; j < cols; j++)
             {
-                Console.Write(array[i, j] + "\t"); // Print each element with a tab for formatting
+                Console.Write(array[i, j] + "\t");
             }
 
-            Console.WriteLine(); // New line after each row
+            Console.WriteLine();
         }
     }
 
@@ -58,57 +56,51 @@ class Program
         int sampleSize = 5;
         int samplingRate = 10;
         // action
-        double[,] transitionMatrix = new double[actionCount, actionCount];
-        for (int k = 0; k < clusterCount; k++) // classification
+        for (int a = 0; a < actionCount; a++)
         {
-            var randomGenerator = new RandomGenerator();
-            var clusters = kMeans.getClusters();
-            int[,] array = new int[1, k];
-            double[] classificationProbabilities = new double[clusterCount];
-            double[,] newClassification = new double[clusterCount, samplingRate];
-            for (int i = 0; i < samplingRate; i++)
+            double[,] transitionMatrix = new double[actionCount, actionCount];
+            for (int k = 0; k < clusterCount; k++) // classification
             {
-                var sampleClassification = new double[clusterCount];
-                for (int j = 0; j < sampleSize; j++)
+                var randomGenerator = new RandomGenerator();
+                var clusters = kMeans.getClusters();
+                double[] classificationProbabilities = new double[clusterCount];
+                double[,] newClassification = new double[clusterCount, samplingRate];
+                for (int i = 0; i < samplingRate; i++)
                 {
-                    var randomIndex = randomGenerator.GetRandomInt(0, clusters[k].Count);
-                    var employee = clusters[k][randomIndex];
-                    var motivationTarget = $"MotivationA{k}";
-                    var propertyInfo = employee.GetType().GetProperty(motivationTarget);
-                    var newEmployeeClassification =
-                        kMeans.GetClusterClassification(employee.MotivationA1); //follow action
-                    sampleClassification[newEmployeeClassification] += 1;
+                    var sampleClassification = new double[clusterCount];
+                    for (int j = 0; j < sampleSize; j++)
+                    {
+                        var randomIndex = randomGenerator.GetRandomInt(0, clusters[k].Count);
+                        var employee = clusters[k][randomIndex];
+                        var motivationTarget = $"MotivationA{a + 1}";
+                        string newMotivationValue =
+                            $"{employee.GetType().GetProperty(motivationTarget).GetValue(employee, null)}";
+                        var newEmployeeClassification =
+                            kMeans.GetClusterClassification(double.Parse(newMotivationValue));
+                        sampleClassification[newEmployeeClassification] += 1;
+                    }
+
+                    for (int l = 0; l < clusterCount; l++)
+                    {
+                        newClassification[l, i] = sampleClassification[l] / sampleSize;
+                    }
                 }
 
-                for (int l = 0; l < clusterCount; l++)
+                for (int m = 0; m < clusterCount; m++)
                 {
-                    newClassification[l, i] = sampleClassification[l] / 5;
+                    double sum = 0.0;
+                    for (int o = 0; o < samplingRate; o++)
+                    {
+                        sum += newClassification[m, o];
+                    }
+
+                    classificationProbabilities[m] = sum / samplingRate;
+                    transitionMatrix[k, m] = sum / samplingRate;
                 }
+                // printArray(classificationProbabilities);
             }
 
-            // Print2DArray(newClassification);
-            for (int m = 0; m < clusterCount; m++)
-            {
-                double sum = 0.0;
-                for (int o = 0; o < samplingRate; o++)
-                {
-                    sum += newClassification[m, o];
-                }
-
-                classificationProbabilities[m] = sum / samplingRate;
-                transitionMatrix[k, m] = sum / samplingRate;
-            }
-
-            // printArray(classificationProbabilities);
+            Print2DArray(transitionMatrix);
         }
-        
-        Print2DArray(transitionMatrix);
-
-
-        // TO DO:  for each action
-        // get random people from each classification
-        // check what are they new classification,
-        // sum and calculate probabilities
-        // build matrix
     }
 }
