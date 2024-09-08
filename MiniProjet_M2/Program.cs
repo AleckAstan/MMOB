@@ -30,8 +30,7 @@ class Program
 
         int sampleSize = 5;
         int samplingRate = 10;
-        // action
-        for (int a = 0; a < actionCount; a++)
+        for (int a = 0; a < actionCount; a++) // action
         {
             double[,] transitionMatrix = new double[actionCount, actionCount];
             for (int k = 0; k < clusterCount; k++) // classification
@@ -40,10 +39,10 @@ class Program
                 var clusters = kMeans.getClusters();
                 double[] classificationProbabilities = new double[clusterCount];
                 double[,] newClassification = new double[clusterCount, samplingRate];
-                for (int i = 0; i < samplingRate; i++)
+                for (int i = 0; i < samplingRate; i++) // iteration de l'experimentation
                 {
                     var sampleClassification = new double[clusterCount];
-                    for (int j = 0; j < sampleSize; j++)
+                    for (int j = 0; j < sampleSize; j++) // nombre d'individus 
                     {
                         var randomIndex = randomGenerator.GetRandomInt(0, clusters[k].Count);
                         var employee = clusters[k][randomIndex];
@@ -55,23 +54,23 @@ class Program
                         sampleClassification[newEmployeeClassification] += 1;
                     }
 
-                    for (int l = 0; l < clusterCount; l++)
+                    for (int l = 0; l < clusterCount; l++) // resultat de la classification de chaque personne
                     {
                         newClassification[l, i] = sampleClassification[l] / sampleSize;
                     }
                 }
-                for (int m = 0; m < clusterCount; m++)
+                for (int m = 0; m < clusterCount; m++) // conversion des resultats en probabilités
                 {
                     double sum = 0.0;
                     for (int o = 0; o < samplingRate; o++)
                     {
                         sum += newClassification[m, o];
                     }
-                    double probability =Math.Round(sum / samplingRate,2);
+                    double probability = Math.Round(sum / samplingRate,2);
                     classificationProbabilities[m] = probability;
                     transitionMatrix[k, m] = probability;
                 }
-                // printArray(classificationProbabilities);
+                // printer.printArray(classificationProbabilities);
             }
             printer.print2DArray(transitionMatrix);
         }
