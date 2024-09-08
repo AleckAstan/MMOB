@@ -10,15 +10,11 @@ public class CsvReader
     public static List<Employee> ReadCsvFile(string filePath)
     {
         var employees = new List<Employee>();
-
         try
         {
             using (var reader = new StreamReader(filePath))
             {
-                // Skip the header line
                 reader.ReadLine();
-
-                // Read each line from the CSV file
                 while (!reader.EndOfStream)
                 {
                     var line = reader.ReadLine();
@@ -27,7 +23,6 @@ public class CsvReader
                     var employee = new Employee
                     {
                         Id = int.Parse(values[0]),
-                        Name = values[1],
                         CurrentMotivation = double.Parse(values[4]),
                         MotivationA1 = double.Parse(values[5]),
                         MotivationA2 = double.Parse(values[6]),

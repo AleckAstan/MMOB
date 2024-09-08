@@ -27,5 +27,7 @@ class Program
         Console.WriteLine($"0.505 {kMeans.GetClusterClassification(0.505)}");
         Console.WriteLine($"0.707 {kMeans.GetClusterClassification(0.707)}");
         Console.WriteLine($"0.7715 {kMeans.GetClusterClassification(0.7715)}");
+        Console.WriteLine($"0.5155 A7 {kMeans.GetClusterClassification(0.5155)}");
+        Console.WriteLine($"0.8055 A7 {kMeans.GetClusterClassification(0.8055)}");
     }
 }

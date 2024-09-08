@@ -26,7 +26,6 @@ public class KMeans
     {
         InitializeCentroids();
         bool centroidsChanged;
-
         do
         {
             AssignToClusters();
