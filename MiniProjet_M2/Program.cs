@@ -8,7 +8,7 @@ class Program
 {
     private static string DATA_PATH = "../../../Assets/Data/employee_data.csv";
     static Printer printer = new Printer();
-
+    // fonction pour la lecture des données dans le fichier csv
     static List<Employee> getData()
     {
         List<Employee> employees = CsvReader.ReadCsvFile(DATA_PATH);
@@ -24,10 +24,10 @@ class Program
         double criticalValue = 1.96; // Pour un niveau de confiance de 95%
         return Math.Abs(tStatistic) > criticalValue;
     }
-
+    // la fonction d'entrer 
     static void Main(string[] args)
     {
-        List<Employee> employees = getData();
+        List<Employee> employees = getData(); // liste des données recueillie des employées 
 
         // Nombre de clusters (k)
         int clusterCount = 4;
@@ -38,33 +38,34 @@ class Program
         KMeans kMeans = new KMeans(clusterCount, employees);
         kMeans.ClassifyEmployees();
 
-        int sampleSize = 5;
-        int samplingRate = 10;
+        int sampleSize = 100; // nombre d'employés dans chaque groupe de m personne
+        int samplingRate = 10; // nombre de repetition de l'experimentation
         double hypothesizedProbability = 0.25; // Valeur de probabilité sous H0 (hypothèse nulle)
 
-        for (int a = 0; a < actionCount; a++) // action
+        for (int a = 0; a < actionCount; a++) // iteration des actions
         {
             double[,] transitionMatrix = new double[actionCount, actionCount];
-            for (int k = 0; k < clusterCount; k++) // classification
+            for (int k = 0; k < clusterCount; k++) // iteration des classifications
             {
-                var randomGenerator = new RandomGenerator();
+                var randomGenerator = new RandomGenerator(); 
                 var clusters = kMeans.getClusters();
-                double[] classificationProbabilities = new double[clusterCount];
+                
+                double[] classificationProbabilities = new double[clusterCount]; 
                 double[,] newClassification = new double[clusterCount, samplingRate];
 
                 for (int i = 0; i < samplingRate; i++) // itération de l'expérimentation
                 {
                     var sampleClassification = new double[clusterCount];
-                    for (int j = 0; j < sampleSize; j++) // nombre d'individus
+                    for (int j = 0; j < sampleSize; j++) // nombre d'employés
                     {
-                        var randomIndex = randomGenerator.GetRandomInt(0, clusters[k].Count);
-                        var employee = clusters[k][randomIndex];
-                        var motivationTarget = $"MotivationA{a + 1}";
+                        var randomIndex = randomGenerator.GetRandomInt(0, clusters[k].Count); // un nombre aleatoire pour recuperer un employé dans la classification courante
+                        var employee = clusters[k][randomIndex]; 
+                        var motivationTarget = $"MotivationA{a + 1}"; // recuperation de la motivation de l'employé apres application de l'action a
                         string newMotivationValue =
                             $"{employee.GetType().GetProperty(motivationTarget).GetValue(employee, null)}";
                         var newEmployeeClassification =
-                            kMeans.GetClusterClassification(double.Parse(newMotivationValue));
-                        sampleClassification[newEmployeeClassification] += 1;
+                            kMeans.GetClusterClassification(double.Parse(newMotivationValue)); // determination de la nouvelle classification de l'employé
+                        sampleClassification[newEmployeeClassification] += 1; // compter les resultats
                     }
 
                     for (int l = 0; l < clusterCount; l++) // résultat de la classification de chaque personne
@@ -73,7 +74,7 @@ class Program
                     }
                 }
 
-                for (int m = 0; m < clusterCount; m++) // conversion des résultats en probabilités
+                for (int m = 0; m < clusterCount; m++) // conversion des probabilités à partir des resultats
                 {
                     double sum = 0.0;
                     for (int o = 0; o < samplingRate; o++)
