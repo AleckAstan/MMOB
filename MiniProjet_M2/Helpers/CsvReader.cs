@@ -35,7 +35,7 @@ public class CsvReader
             }
         }
         catch (Exception ex)
-        {
+        { 
             Console.WriteLine($"Error reading CSV file: {ex}");
         }
 
