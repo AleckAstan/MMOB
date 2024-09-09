@@ -82,8 +82,7 @@ class Program
                         var randomIndex = randomGenerator.GetRandomInt(0, clusters[k].Count);
                         var employee = clusters[k][randomIndex];
                         var motivationTarget = $"MotivationA{a + 1}";
-                        string newMotivationValue =
-                            $"{employee.GetType().GetProperty(motivationTarget).GetValue(employee, null)}";
+                        string newMotivationValue =$"{employee.GetType().GetProperty(motivationTarget).GetValue(employee, null)}";
                         var newEmployeeClassification =
                             kMeans.GetClusterClassification(double.Parse(newMotivationValue));
                         sampleClassification[newEmployeeClassification] += 1;

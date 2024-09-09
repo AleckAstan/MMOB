@@ -32,7 +32,6 @@ public class CsvReader
                         MotivationA4 = double.Parse(values[9].Replace('.', ',')),
                     };
                     employees.Add(employee);
-                    Console.WriteLine(employee);
                 }
             }
         }
