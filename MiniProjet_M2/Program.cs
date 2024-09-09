@@ -38,7 +38,7 @@ class Program
         KMeans kMeans = new KMeans(clusterCount, employees);
         kMeans.ClassifyEmployees();
 
-        int sampleSize = 100; // nombre d'employés dans chaque groupe de m personne
+        int sampleSize = 15; // nombre d'employés dans chaque groupe de m personne
         int samplingRate = 10; // nombre de repetition de l'experimentation
         double hypothesizedProbability = 0.25; // Valeur de probabilité sous H0 (hypothèse nulle)
 
