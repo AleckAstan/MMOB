@@ -5,6 +5,8 @@ using MiniProjet_M2.Models;
 
 namespace MiniProjet_M2.Helpers;
 
+using System.Globalization;
+
 public class CsvReader
 {
     public static List<Employee> ReadCsvFile(string filePath)
@@ -23,14 +25,14 @@ public class CsvReader
                     var employee = new Employee
                     {
                         Id = int.Parse(values[0]),
-                        CurrentMotivation = double.Parse(values[4]),
-                        MotivationA1 = double.Parse(values[5]),
-                        MotivationA2 = double.Parse(values[6]),
-                        MotivationA3 = double.Parse(values[7]),
-                        MotivationA4 = double.Parse(values[9]),
+                        CurrentMotivation = double.Parse(values[4].Replace('.', ',')), 
+                        MotivationA1 = double.Parse(values[5].Replace('.', ',')),
+                        MotivationA2 = double.Parse(values[6].Replace('.', ',')),
+                        MotivationA3 = double.Parse(values[7].Replace('.', ',')),
+                        MotivationA4 = double.Parse(values[9].Replace('.', ',')),
                     };
-
                     employees.Add(employee);
+                    Console.WriteLine(employee);
                 }
             }
         }
@@ -38,7 +40,6 @@ public class CsvReader
         {
             Console.WriteLine($"Error reading CSV file: {ex}");
         }
-
         return employees;
     }
 }

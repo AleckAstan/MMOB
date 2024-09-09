@@ -116,6 +116,11 @@ public class KMeans
         var lastElement = cluster[cluster.Count - 1].CurrentMotivation;
         return (firstElement + lastElement) / 2;
     }
+    
+    public double[] GetCentroids()
+    {
+        return _centroids;
+    }
 
     public int GetClusterClassification(double value)
     {
