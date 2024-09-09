@@ -11,6 +11,6 @@ public class Employee
     
     public override string ToString()
     {
-        return $"Id: {Id}, CurrentMotivation: {CurrentMotivation}";
+        return $"Id: {Id}, , CurrentMotivation: {CurrentMotivation}, MotivationA1: {MotivationA1}, MotivationA2: {MotivationA2}, MotivationA3: {MotivationA3}, MotivationA4: {MotivationA4}";
     }
 }

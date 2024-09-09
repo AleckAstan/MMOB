@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using MiniProjet_M2.Helpers;
 using MiniProjet_M2.Models;
 using MiniProjet_M2.Utils;
+using OxyPlot;
+using OxyPlot.Series;
+using OxyPlot.Axes;
+using OxyPlot.WindowsForms;
+using System.Windows.Forms;
 
 class Program
 {
@@ -45,14 +50,21 @@ class Program
         // Nombre d'actions (a)
         int actionCount = 4;
 
-        // Instanciation de la classe KMeans et exécution de l'algorithme
+        // Instancier la classe KMeans et exécuter l'algorithme
         KMeans kMeans = new KMeans(clusterCount, employees);
         kMeans.ClassifyEmployees();
 
         int sampleSize = 5;
         int samplingRate = 10;
-        double hypothesizedProbability = 0.25; // Valeur de probabilité sous H0 (hypothèse nulle)
+        
+        // Obtenir les clusters et calculer le score de silhouette
+        var silhouetteClusters = kMeans.getClusters();
+        double silhouetteScore = SilhouetteScore.CalculateSilhouetteScore(silhouetteClusters);
 
+        Console.WriteLine($"Score de silhouette pour K = {clusterCount}: {silhouetteScore}");
+        
+        double hypothesizedProbability = 0.25; // Valeur de probabilité sous H0 (hypothèse nulle)
+        
         for (int a = 0; a < actionCount; a++) // action
         {
             double[,] transitionMatrix = new double[actionCount, actionCount];
@@ -62,11 +74,10 @@ class Program
                 var clusters = kMeans.getClusters();
                 double[] classificationProbabilities = new double[clusterCount];
                 double[,] newClassification = new double[clusterCount, samplingRate];
-
                 for (int i = 0; i < samplingRate; i++) // itération de l'expérimentation
                 {
                     var sampleClassification = new double[clusterCount];
-                    for (int j = 0; j < sampleSize; j++) // nombre d'individus
+                    for (int j = 0; j < sampleSize; j++) // nombre d'individus 
                     {
                         var randomIndex = randomGenerator.GetRandomInt(0, clusters[k].Count);
                         var employee = clusters[k][randomIndex];
@@ -83,7 +94,6 @@ class Program
                         newClassification[l, i] = sampleClassification[l] / sampleSize;
                     }
                 }
-
                 for (int m = 0; m < clusterCount; m++) // conversion des résultats en probabilités
                 {
                     double sum = 0.0;
@@ -118,8 +128,22 @@ class Program
                 // printer.printArray(classificationProbabilities);
             }
 
-            // Afficher la matrice de transition pour l'action courante
             printer.print2DArray(transitionMatrix);
+            
+            Kolmogorov kolmogorov = new Kolmogorov(transitionMatrix);
+            // Obtenir la matrice de transition après 2 étapes
+            double[,] forecastMatrix = kolmogorov.PowerMatrix(5);
+        
+            // Afficher la matrice forecastMatrix
+            Console.WriteLine("Matrice de prévision : ");
+            printer.print2DArray(forecastMatrix);
+        
+            // Vérifier la probabilité de transition de l'état 0 à l'état 1 en 2 étapes
+            double multiStepsProbability = kolmogorov.GetTransitionProbability(0, 1, 5);
+            Console.WriteLine($"Probabilité de transition de l'état 0 à l'état 1 en 5 étapes : {multiStepsProbability}");
+            
+            double verifiedProbability = kolmogorov.VerifyTransitionProbability(0, 1, 2, 3);
+            Console.WriteLine($"Probabilité vérifiée de transition de l'état 0 à l'état 1 en 2 + 3 étapes : {verifiedProbability}");
         }
     }
 }
