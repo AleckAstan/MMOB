@@ -145,7 +145,7 @@ public class KMeans
     // demotivé C1 < C2 < C3 < C4 tres motivé 
     private void SortClusters()
     {
-        // Create a list of tuples containing cluster index and average motivation
+        // Ccreation de liste de cluster avec leur moyenne
         var clusterAverages = new List<(int Index, double AverageMotivation)>();
         for (int i = 0; i < _k; i++)
         {
@@ -153,10 +153,9 @@ public class KMeans
             clusterAverages.Add((i, averageMotivation));
         }
 
-        // Sort clusters based on average motivation
+        // Trier les clusters en fonction de la moyenne
         clusterAverages = clusterAverages.OrderBy(c => c.AverageMotivation).ToList();
 
-        // Reorder clusters based on sorted indices
         var sortedClusters = new List<Employee>[_k];
         for (int i = 0; i < _k; i++)
         {
