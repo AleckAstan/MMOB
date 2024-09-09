@@ -1,5 +1,6 @@
 namespace MiniProjet_M2.Utils;
-
+ 
+// une classe pour faciliter l'affichage des matrices 1D et  2D
 public class Printer
 {
     public void print2DArray(double[,] array)
