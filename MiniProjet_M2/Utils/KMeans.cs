@@ -6,7 +6,7 @@ using MiniProjet_M2.Models;
 public class KMeans
 {
     private int _k;
-    private List<Employee> _employees;
+    private List<Employee> _employees; 
     private double[] _centroids;
     private List<Employee>[] _clusters;
 
@@ -18,7 +18,7 @@ public class KMeans
         _clusters = new List<Employee>[_k];
         for (int i = 0; i < _k; i++)
         {
-            _clusters[i] = new List<Employee>();
+            _clusters[i] = new List<Employee>(); // creation des k clusters 
         }
     }
 
@@ -26,7 +26,8 @@ public class KMeans
     {
         return _clusters;
     }
-
+    
+    // le point d'entrer de la classe
     public void ClassifyEmployees()
     {
         InitializeCentroids();
@@ -42,9 +43,9 @@ public class KMeans
 
     private void InitializeCentroids()
     {
-        // Randomly pick k centroids from the employees' CurrentMotivation values
+        // initialisation à des valeurs aleatoires de k centroids à partir de la valeur pour la classification: CurrentMotivation
         Random rand = new Random();
-        HashSet<int> chosenIndexes = new HashSet<int>();
+        HashSet<int> chosenIndexes = new HashSet<int>(); // pourqu'aucun centroids soit unique
         for (int i = 0; i < _k; i++)
         {
             int index;
@@ -60,7 +61,7 @@ public class KMeans
 
     private void AssignToClusters()
     {
-        // Clear previous clusters
+        // Nettoyage des precedentes clusters 
         for (int i = 0; i < _k; i++)
         {
             _clusters[i].Clear();
@@ -68,11 +69,12 @@ public class KMeans
 
         foreach (var employee in _employees)
         {
-            int closestCentroidIndex = GetClosestCentroidIndex(employee.CurrentMotivation);
-            _clusters[closestCentroidIndex].Add(employee);
+            int closestCentroidIndex = GetClosestCentroidIndex(employee.CurrentMotivation); // trouver le centroid le plus proche
+            _clusters[closestCentroidIndex].Add(employee); // assigner l'employé au centroid plus proche
         }
     }
 
+    //Recalcule des nouveaux centroids
     private bool UpdateCentroids()
     {
         bool centroidsChanged = false;
@@ -92,6 +94,8 @@ public class KMeans
         return centroidsChanged;
     }
 
+    
+    //Recherche du centroid le plus proche
     private int GetClosestCentroidIndex(double value)
     {
         double minDistance = double.MaxValue;
@@ -110,13 +114,16 @@ public class KMeans
         return closestIndex;
     }
 
+    // recherche du centre du cluster
     private double GetClusterCenterIndex(List<Employee> cluster)
     {
         var firstElement = cluster[0].CurrentMotivation;
         var lastElement = cluster[cluster.Count - 1].CurrentMotivation;
         return (firstElement + lastElement) / 2;
     }
-
+    
+    
+    // recherche de la classification d'un employé par sa valeur de motivation
     public int GetClusterClassification(double value)
     {
         var minDistance = Math.Abs(value - GetClusterCenterIndex(_clusters[0]));
@@ -134,6 +141,8 @@ public class KMeans
         return clusterIndex;
     }
 
+    // triage des cluster pour suivre
+    // demotivé C1 < C2 < C3 < C4 tres motivé 
     private void SortClusters()
     {
         // Create a list of tuples containing cluster index and average motivation
