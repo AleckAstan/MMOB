@@ -142,13 +142,18 @@ class Program
         List<double[,]> gaussMatrixs = new List<double[,]>(4);
         for (int i = 0; i < transitionMatrixs.Count; i++)
         {
-            transposedMatrixs.Add(matrixMethod.transposeMatrix(transitionMatrixs[i]));
-            gaussMatrixs.Add(matrixMethod.adaptToGauss(matrixMethod.transposeMatrix(transitionMatrixs[i])));
-            Console.WriteLine("=====================transposition=============================");
-            // printer.print2DArray(transitionMatrixs[i]);
-            // printer.print2DArray(transposedMatrixs[i]);
-            // printer.print2DArray(gaussMatrixs[i]);
-            printer.printArray(matrixMethod.generateInitialResult(transitionMatrixs.Count + 1));
+            ResolveGauss(transitionMatrixs[i]);
         }
+    }
+
+    static void ResolveGauss(double[,] matrix)
+    {
+        printer.print2DArray(matrix, "matrix");
+        var transposedMatrix = matrixMethod.transposeMatrix(matrix);
+        printer.print2DArray(transposedMatrix, "transposed");
+        var gauss = matrixMethod.adaptToGauss(transposedMatrix);
+        printer.print2DArray(gauss, "gauss");
+        var initialResult = matrixMethod.generateInitialResult(matrix.GetLength(0) + 1);
+        printer.printArray(initialResult, "initialResult");
     }
 }

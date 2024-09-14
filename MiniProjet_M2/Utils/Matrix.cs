@@ -27,10 +27,15 @@ public class Matrix
     {
         int rows = matrix.GetLength(0);
         int cols = matrix.GetLength(1);
+        // double[,] transposedMatrix = matrix.Clone() as double[,];
         double[,] transposedMatrix = new double[cols + 1, rows];
-        for (int i = 0; i < cols - 1; i++)
+        // transposedMatrix = matrix.Clone() as double[,];
+        for (int i = 0; i < cols; i++)
         {
-            transposedMatrix[i, i] = matrix[i, i] - 1;
+            for (int j = 0; j < rows; j++)
+            {
+                transposedMatrix[i, j] = i == j ? matrix[i, i] - 1 : matrix[i, j];
+            }
         }
 
         for (int i = 0; i < rows; i++)
@@ -47,7 +52,7 @@ public class Matrix
 
         for (int i = 0; i < length; i++)
         {
-            if (i < length-1)
+            if (i < length - 1)
             {
                 result[i] = 0;
             }
