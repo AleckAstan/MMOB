@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using MiniProjet_M2.Helpers;
 using MiniProjet_M2.Models;
 using MiniProjet_M2.Utils;
@@ -14,13 +15,13 @@ class Program
     private static string DATA_PATH = "../../../Assets/Data/employee_data.csv";
     static Printer printer = new Printer();
     static Matrix matrixMethod = new Matrix();
-    
+
     static List<Employee> getData()
     {
         List<Employee> employees = CsvReader.ReadCsvFile(DATA_PATH);
         return employees;
     }
-    
+
     static bool PerformTTest(double observedProbability, double hypothesizedProbability, double stdDev, int sampleSize)
     {
         double tStatistic = (observedProbability - hypothesizedProbability) / (stdDev / Math.Sqrt(sampleSize));
@@ -45,16 +46,16 @@ class Program
 
         int sampleSize = 5;
         int samplingRate = 10;
-        
+
         // Get clusters and calculate the silhouette score
         var silhouetteClusters = kMeans.getClusters();
         double silhouetteScore = SilhouetteScore.CalculateSilhouetteScore(silhouetteClusters);
 
         Console.WriteLine($"Silhouette Score for K = {clusterCount}: {silhouetteScore}");
-        
+
         double hypothesizedProbability = 0.25; // Valeur de probabilité sous H0 (hypothèse nulle)
         List<double[,]> transitionMatrixs = new List<double[,]>();
-        
+
         for (int a = 0; a < actionCount; a++) // action
         {
             double[,] transitionMatrix = new double[actionCount, actionCount];
@@ -108,37 +109,46 @@ class Program
                     }
                     else
                     {
-                        transitionMatrix[k, m] = hypothesizedProbability; // Utiliser la probabilité hypothétique sous H0
+                        transitionMatrix[k, m] =
+                            hypothesizedProbability; // Utiliser la probabilité hypothétique sous H0
                     }
                 }
                 // printer.printArray(classificationProbabilities);
-                
             }
 
             printer.print2DArray(transitionMatrix);
             transitionMatrixs.Add(transitionMatrix);
-                
+
             Kolmogorov kolmogorov = new Kolmogorov(transitionMatrix);
             // Obtenir la matrice de transition après 2 étapes
             double[,] forecastMatrix = kolmogorov.PowerMatrix(5);
-        
+
             // Afficher la matrice forecastMatrix
             Console.WriteLine("Forecast Matrix : ");
             printer.print2DArray(forecastMatrix);
-        
+
             // Vérifier la probabilité de transition de l'état 0 à l'état 1 en 2 étapes
             double multiStepsProbability = kolmogorov.GetTransitionProbability(0, 1, 5);
             Console.WriteLine($"Probability of transition from 0 to 1 in 5 steps: {multiStepsProbability}");
-            
+
             double verifiedProbability = kolmogorov.VerifyTransitionProbability(0, 1, 2, 3);
             Console.WriteLine($"Verified probability of transition from 0 to 1 in 2 + 3 steps: {verifiedProbability}");
         }
-        
-        
-        
+
+
         /// etape 4
-        Console.WriteLine("=====================etape 4=============================");
-        printer.print2DArray(transitionMatrixs[0]);
-        printer.print2DArray(matrixMethod.transposeMatrix(transitionMatrixs[0]));
+        Console.WriteLine("=====================DEBUT=============================");
+        List<double[,]> transposedMatrixs = new List<double[,]>(4);
+        List<double[,]> gaussMatrixs = new List<double[,]>(4);
+        for (int i = 0; i < transitionMatrixs.Count; i++)
+        {
+            transposedMatrixs.Add(matrixMethod.transposeMatrix(transitionMatrixs[i]));
+            gaussMatrixs.Add(matrixMethod.adaptToGauss(matrixMethod.transposeMatrix(transitionMatrixs[i])));
+            Console.WriteLine("=====================transposition=============================");
+            // printer.print2DArray(transitionMatrixs[i]);
+            // printer.print2DArray(transposedMatrixs[i]);
+            // printer.print2DArray(gaussMatrixs[i]);
+            printer.printArray(matrixMethod.generateInitialResult(transitionMatrixs.Count + 1));
+        }
     }
 }
