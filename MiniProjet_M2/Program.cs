@@ -13,7 +13,8 @@ class Program
 {
     private static string DATA_PATH = "../../../Assets/Data/employee_data.csv";
     static Printer printer = new Printer();
-
+    static Matrix matrixMethod = new Matrix();
+    
     static List<Employee> getData()
     {
         List<Employee> employees = CsvReader.ReadCsvFile(DATA_PATH);
@@ -52,6 +53,7 @@ class Program
         Console.WriteLine($"Silhouette Score for K = {clusterCount}: {silhouetteScore}");
         
         double hypothesizedProbability = 0.25; // Valeur de probabilité sous H0 (hypothèse nulle)
+        List<double[,]> transitionMatrixs = new List<double[,]>();
         
         for (int a = 0; a < actionCount; a++) // action
         {
@@ -114,7 +116,8 @@ class Program
             }
 
             printer.print2DArray(transitionMatrix);
-            
+            transitionMatrixs.Add(transitionMatrix);
+                
             Kolmogorov kolmogorov = new Kolmogorov(transitionMatrix);
             // Obtenir la matrice de transition après 2 étapes
             double[,] forecastMatrix = kolmogorov.PowerMatrix(5);
@@ -130,5 +133,12 @@ class Program
             double verifiedProbability = kolmogorov.VerifyTransitionProbability(0, 1, 2, 3);
             Console.WriteLine($"Verified probability of transition from 0 to 1 in 2 + 3 steps: {verifiedProbability}");
         }
+        
+        
+        
+        /// etape 4
+        Console.WriteLine("=====================etape 4=============================");
+        printer.print2DArray(transitionMatrixs[0]);
+        printer.print2DArray(matrixMethod.transposeMatrix(transitionMatrixs[0]));
     }
 }
