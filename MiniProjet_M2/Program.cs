@@ -138,6 +138,7 @@ class Program
             { 1, 2, 3, 4 },
         };
 
+
         List<double[,]> politicMatrixs = new List<double[,]>();
         for (int i = 0; i < transitionMatrixs.Count; i++)
         {
@@ -162,6 +163,7 @@ class Program
 
         // Tableau des coûts (A1, A2, A3, A4) en fonction des états (E1, E2, E3, E4)
         double[,] costTable = new double[,]
+
         {
             // E1 (Démotivé), E2 (Plus ou moins motivé), E3 (Motivé), E4 (Très motivé)
             { 0, 0, 0, 0 }, // A1: Ne rien faire
@@ -169,51 +171,40 @@ class Program
             { 300, 200, 100, 50 }, // A3: Créer concurrence
             { 250, 200, 150, 75 } // A4: Heure de travail flexible
         };
-
-        Console.WriteLine("=====================CONCLUSION=============================");
-        // Conclusion sur le coût minimum politique de décision
-        double minCost = double.MaxValue;
-        int bestPoliticIndex = -1;
-        for (int i = 0; i < politicMatrixs.Count; i++)
+        var minCost = double.MaxValue;
+        var bestPoliticIndex = -1;
+        for (int i = 0; i < politics.GetLength(0); i++)
         {
+            List<double> costTableValue = new List<double>();
+            for (int j = 0; j < politics.GetLength(0); j++)
+            {
+                int politicIndex = politics[i, j] - 1;
+                costTableValue.Add(costTable[politicIndex, j]);
+            }
+            Console.WriteLine("-----------------------------");
+           
             var pi = powerIteration.resolveByPuissance(politicMatrixs[i]);
-            double cost = CostMean(pi, costTable);
-            Console.WriteLine($"Politic {i} Cost = {CostMean(pi, costTable)}");
+            double cost = CostMean(pi, costTableValue.ToArray());
+            Console.WriteLine($"Politic {i} Cost = {CostMean(pi, costTableValue.ToArray())}");
             if (cost < minCost)
             {
                 minCost = cost;
                 bestPoliticIndex = i;
             }
-        }
 
+        }
+        
         Console.WriteLine($"The best decision policy is Politic {bestPoliticIndex} with a minimum cost of {minCost}");
+
     }
 
 
-    static double CostMean(double[] pi, double[,] costTable)
+    static double CostMean(double[] pi, double[] cost)
     {
         double costMean = 0.0;
-        int actionCount = costTable.GetLength(0);
-        int stateCount = costTable.GetLength(1);
-
-        // Vérifiez si la longueur de pi correspond au nombre d'états
-        if (pi.Length != stateCount)
+        for (int i = 0; i < pi.Length; i++)
         {
-            throw new ArgumentException(
-                "La longueur du vecteur des probabilités d'état ne correspond pas au nombre d'états dans le tableau des coûts.");
-        }
-
-        // Calculer le coût moyen pour chaque action
-        for (int action = 0; action < actionCount; action++)
-        {
-            double actionCost = 0.0;
-            for (int state = 0; state < stateCount; state++)
-            {
-                actionCost += pi[state] * costTable[action, state];
-            }
-
-            // Ajouter le coût moyen de cette action à costMean
-            costMean += actionCost;
+            costMean += cost[i] * pi[i];
         }
 
         return costMean;
