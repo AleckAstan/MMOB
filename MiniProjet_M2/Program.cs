@@ -139,10 +139,10 @@ class Program
         };
 
         List<double[,]> politicMatrixs = new List<double[,]>();
-        // for (int i = 0; i < transitionMatrixs.Count; i++)
-        // {
-        //     printer.print2DArray(transitionMatrixs[i], $"transition matrix #{i}");
-        // }
+        for (int i = 0; i < transitionMatrixs.Count; i++)
+        {
+            printer.print2DArray(transitionMatrixs[i], $"transition matrix #{i}");
+        }
 
         for (int i = 0; i < politics.GetLength(0); i++)
         {
@@ -156,15 +156,15 @@ class Program
                 }
             }
 
-            // printer.print2DArray(politic, $"politic-{i}");
+            printer.print2DArray(politic, $"politic-{i}");
             politicMatrixs.Add(politic);
         }
+        
         double[] cost = [0, 1000, 2000, 3000];
 
         for (int i = 0; i < politicMatrixs.Count; i++)
         {
             var pi = powerIteration.resolveByPuissance(politicMatrixs[i]);
-            
             Console.WriteLine($"Politic {i} Cost= {CostMean(pi,cost)}");
         }
 
@@ -177,7 +177,6 @@ class Program
         {
             costMean += cost[i] * pi[i];
         }
-
         return costMean;
     }
 }
