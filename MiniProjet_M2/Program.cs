@@ -159,24 +159,63 @@ class Program
             printer.print2DArray(politic, $"politic-{i}");
             politicMatrixs.Add(politic);
         }
-        
-        double[] cost = [0, 1000, 2000, 3000];
 
+        // Tableau des coûts (A1, A2, A3, A4) en fonction des états (E1, E2, E3, E4)
+        double[,] costTable = new double[,]
+        {
+            // E1 (Démotivé), E2 (Plus ou moins motivé), E3 (Motivé), E4 (Très motivé)
+            { 150, 100, 50, 10 }, // A1: Ne rien faire
+            { 500, 400, 250, 100 }, // A2: Augmenter le salaire 5%
+            { 300, 200, 100, 50 }, // A3: Créer concurrence
+            { 250, 200, 150, 75 } // A4: Heure de travail flexible
+        };
+
+        Console.WriteLine("=====================CONCLUSION=============================");
+        // Conclusion sur le coût minimum politique de décision
+        double minCost = double.MaxValue;
+        int bestPoliticIndex = -1;
         for (int i = 0; i < politicMatrixs.Count; i++)
         {
             var pi = powerIteration.resolveByPuissance(politicMatrixs[i]);
-            Console.WriteLine($"Politic {i} Cost= {CostMean(pi,cost)}");
+            double cost = CostMean(pi, costTable);
+            Console.WriteLine($"Politic {i} Cost = {CostMean(pi, costTable)}");
+            if (cost < minCost)
+            {
+                minCost = cost;
+                bestPoliticIndex = i;
+            }
         }
 
+        Console.WriteLine($"The best decision policy is Politic {bestPoliticIndex} with a minimum cost of {minCost}");
     }
 
-    static double CostMean(double[] pi, double[] cost)
+
+    static double CostMean(double[] pi, double[,] costTable)
     {
         double costMean = 0.0;
-        for (int i = 0; i < pi.Length; i++)
+        int actionCount = costTable.GetLength(0);
+        int stateCount = costTable.GetLength(1);
+
+        // Vérifiez si la longueur de pi correspond au nombre d'états
+        if (pi.Length != stateCount)
         {
-            costMean += cost[i] * pi[i];
+            throw new ArgumentException(
+                "La longueur du vecteur des probabilités d'état ne correspond pas au nombre d'états dans le tableau des coûts.");
         }
+
+        // Calculer le coût moyen pour chaque action
+        for (int action = 0; action < actionCount; action++)
+        {
+            double actionCost = 0.0;
+            for (int state = 0; state < stateCount; state++)
+            {
+                actionCost += pi[state] * costTable[action, state];
+            }
+
+            // Ajouter le coût moyen de cette action à costMean
+            costMean += actionCost;
+        }
+
         return costMean;
     }
 }
