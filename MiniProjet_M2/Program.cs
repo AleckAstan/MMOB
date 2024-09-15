@@ -164,7 +164,7 @@ class Program
         double[,] costTable = new double[,]
         {
             // E1 (Démotivé), E2 (Plus ou moins motivé), E3 (Motivé), E4 (Très motivé)
-            { 150, 100, 50, 10 }, // A1: Ne rien faire
+            { 0, 0, 0, 0 }, // A1: Ne rien faire
             { 500, 400, 250, 100 }, // A2: Augmenter le salaire 5%
             { 300, 200, 100, 50 }, // A3: Créer concurrence
             { 250, 200, 150, 75 } // A4: Heure de travail flexible
