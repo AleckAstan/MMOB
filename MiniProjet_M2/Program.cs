@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using MiniProjet_M2.Helpers;
+﻿using MiniProjet_M2.Helpers;
 using MiniProjet_M2.Models;
 using MiniProjet_M2.Utils;
-using OxyPlot;
-using OxyPlot.Series;
-using OxyPlot.Axes;
-using OxyPlot.WindowsForms;
-using System.Windows.Forms;
 
 class Program
 {
     private static string DATA_PATH = "../../../Assets/Data/employee_data.csv";
     static Printer printer = new Printer();
-    static Matrix matrixMethod = new Matrix();
+    static PowerIteration powerIteration = new PowerIteration();
 
     static List<Employee> getData()
     {
@@ -138,22 +130,9 @@ class Program
 
         /// etape 4
         Console.WriteLine("=====================DEBUT=============================");
-        List<double[,]> transposedMatrixs = new List<double[,]>(4);
-        List<double[,]> gaussMatrixs = new List<double[,]>(4);
         for (int i = 0; i < transitionMatrixs.Count; i++)
         {
-            ResolveGauss(transitionMatrixs[i]);
+            powerIteration.resolveByPuissance(transitionMatrixs[i]);
         }
-    }
-
-    static void ResolveGauss(double[,] matrix)
-    {
-        printer.print2DArray(matrix, "matrix");
-        var transposedMatrix = matrixMethod.transposeMatrix(matrix);
-        printer.print2DArray(transposedMatrix, "transposed");
-        var gauss = matrixMethod.adaptToGauss(transposedMatrix);
-        printer.print2DArray(gauss, "gauss");
-        var initialResult = matrixMethod.generateInitialResult(matrix.GetLength(0) + 1);
-        printer.printArray(initialResult, "initialResult");
     }
 }
