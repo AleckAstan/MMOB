@@ -6,7 +6,7 @@ public class Printer
     {
         int rows = array.GetLength(0);
         int cols = array.GetLength(1);
-        Console.WriteLine($"{title}----------------------------------------------------------");
+        Console.WriteLine($"----------------------------{title}------------------------------");
         for (int i = 0; i < rows; i++)
         {
             for (int j = 0; j < cols; j++)
@@ -20,7 +20,7 @@ public class Printer
 
     public void printArray(double[] array, string title = "")
     {
-        Console.WriteLine($"{title}----------------------------------------------------------");
+        Console.WriteLine($"{title}-----------------------{title}-----------------------------------");
         int rows = array.Length;
         for (int i = 0; i < rows; i++)
         {

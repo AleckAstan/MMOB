@@ -130,9 +130,36 @@ class Program
 
         /// etape 4
         Console.WriteLine("=====================DEBUT=============================");
+        int[,] politics =
+        {
+            { 1, 1, 1, 1 },
+            { 1, 2, 2, 3 },
+            { 2, 2, 3, 3 },
+            { 1, 2, 3, 4 },
+        };
+        List<double[,]> politicMatrixs = new List<double[,]>();
         for (int i = 0; i < transitionMatrixs.Count; i++)
         {
-            powerIteration.resolveByPuissance(transitionMatrixs[i]);
+            printer.print2DArray(transitionMatrixs[i], $"transition matrix #{i}");
         }
+
+        for (int i = 0; i < politics.GetLength(0); i++)
+        {
+            double[,] politic = new double[transitionMatrixs[0].GetLength(0), transitionMatrixs[0].GetLength(1)];
+            for (int j = 0; j < politic.GetLength(0); j++)
+            {
+                int politicIndex = politics[i, j] - 1;
+                for (int k = 0; k < politic.GetLength(0); k++)
+                {
+                    politic[j, k] = transitionMatrixs[politicIndex][j, k];
+                }
+            }
+            printer.print2DArray(politic, $"politic-{i}");
+            politicMatrixs.Add(politic);
+        }
+        // for (int i = 0; i < transitionMatrixs.Count; i++)
+        // {
+        //     powerIteration.resolveByPuissance(transitionMatrixs[i]);
+        // }
     }
 }

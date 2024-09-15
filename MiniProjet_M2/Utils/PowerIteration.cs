@@ -3,7 +3,8 @@ namespace MiniProjet_M2.Utils;
 public class PowerIteration
 {
     static Matrix matrixMethod = new Matrix();
-    public  void resolveByPuissance(double[,] P)
+
+    public double[] resolveByPuissance(double[,] P)
     {
         // Vecteur initial π (valeurs égales ou aléatoires)
         int M = P.GetLength(0); // Nombre d'états (taille de la matrice)
@@ -77,5 +78,6 @@ public class PowerIteration
         }
 
         Console.WriteLine("Somme des éléments de π : " + piSum);
+        return pi;
     }
 }
