@@ -138,10 +138,10 @@ class Program
             { 1, 2, 3, 4 },
         };
         List<double[,]> politicMatrixs = new List<double[,]>();
-        for (int i = 0; i < transitionMatrixs.Count; i++)
-        {
-            printer.print2DArray(transitionMatrixs[i], $"transition matrix #{i}");
-        }
+        // for (int i = 0; i < transitionMatrixs.Count; i++)
+        // {
+        //     printer.print2DArray(transitionMatrixs[i], $"transition matrix #{i}");
+        // }
 
         for (int i = 0; i < politics.GetLength(0); i++)
         {
@@ -154,12 +154,14 @@ class Program
                     politic[j, k] = transitionMatrixs[politicIndex][j, k];
                 }
             }
-            printer.print2DArray(politic, $"politic-{i}");
+
+            // printer.print2DArray(politic, $"politic-{i}");
             politicMatrixs.Add(politic);
         }
-        // for (int i = 0; i < transitionMatrixs.Count; i++)
-        // {
-        //     powerIteration.resolveByPuissance(transitionMatrixs[i]);
-        // }
+
+        for (int i = 0; i < politicMatrixs.Count; i++)
+        {
+            printer.printArray(powerIteration.resolveByPuissance(politicMatrixs[i]), $"politic-{i}-pi");
+        }
     }
 }
