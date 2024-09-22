@@ -140,10 +140,10 @@ class Program
 
 
         List<double[,]> politicMatrixs = new List<double[,]>();
-        // for (int i = 0; i < transitionMatrixs.Count; i++)
-        // {
-        //     printer.print2DArray(transitionMatrixs[i], $"transition matrix #{i}");
-        // }
+        for (int i = 0; i < transitionMatrixs.Count; i++)
+        {
+            printer.print2DArray(transitionMatrixs[i], $"transition matrix #{i}");
+        }
 
         for (int i = 0; i < politics.GetLength(0); i++)
         {
@@ -165,7 +165,7 @@ class Program
         double[,] costTable = new double[,]
         {
             // E1 (Démotivé), E2 (Plus ou moins motivé), E3 (Motivé), E4 (Très motivé)
-            { 0, 0, 0, 0 }, // A1: Ne rien faire
+            { 100, 250, 56, 80 }, // A1: Ne rien faire
             { 500, 400, 250, 100 }, // A2: Augmenter le salaire 5%
             { 300, 200, 100, 50 }, // A3: Créer concurrence
             { 250, 200, 150, 75 } // A4: Heure de travail flexible
@@ -192,10 +192,8 @@ class Program
             }
 
         }
-
-        // Console.WriteLine($"The best decision policy is Politic {bestPoliticIndex} with a minimum cost of {minCost}");
-        Genetic genetic = new Genetic();
-        genetic.generatePopulation(10, 4);
+        Genetic genetic = new Genetic(transitionMatrixs);
+        genetic.Evolve(50);
     }
 
 

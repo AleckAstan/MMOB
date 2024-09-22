@@ -17,8 +17,34 @@ public class Printer
             Console.WriteLine();
         }
     }
+    public void print2DArray(int[,] array, string title = "")
+    {
+        int rows = array.GetLength(0);
+        int cols = array.GetLength(1);
+        Console.WriteLine($"----------------------------{title}------------------------------");
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                Console.Write((array[i, j], 2) + "\t");
+            }
+
+            Console.WriteLine();
+        }
+    }
 
     public void printArray(double[] array, string title = "")
+    {
+        Console.WriteLine($"{title}-----------------------{title}-----------------------------------");
+        int rows = array.Length;
+        for (int i = 0; i < rows; i++)
+        {
+            Console.Write(array[i] + "\t");
+        }
+
+        Console.WriteLine();
+    }
+    public void printArray(int[] array, string title = "")
     {
         Console.WriteLine($"{title}-----------------------{title}-----------------------------------");
         int rows = array.Length;
