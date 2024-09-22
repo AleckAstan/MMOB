@@ -55,7 +55,7 @@ public class PowerIteration
 
             if (error < tolerance)
             {
-                Console.WriteLine("Convergence atteinte après " + iteration + " itérations.");
+                // Console.WriteLine("Convergence atteinte après " + iteration + " itérations.");
                 break;
             }
 
@@ -64,11 +64,11 @@ public class PowerIteration
         }
 
         // Afficher les valeurs du vecteur propre π
-        Console.WriteLine("Le vecteur propre π est :");
-        for (int i = 0; i < pi.Length; i++)
-        {
-            Console.WriteLine("π" + (i + 1) + " = " + pi[i]);
-        }
+        // Console.WriteLine("Le vecteur propre π est :");
+        // for (int i = 0; i < pi.Length; i++)
+        // {
+        //     Console.WriteLine("π" + (i + 1) + " = " + pi[i]);
+        // }
 
         // Vérifier la condition de somme égale à 1
         double piSum = 0;
@@ -77,7 +77,7 @@ public class PowerIteration
             piSum += value;
         }
 
-        Console.WriteLine("Somme des éléments de π : " + piSum);
+        // Console.WriteLine("Somme des éléments de π : " + piSum);
         return pi;
     }
 }

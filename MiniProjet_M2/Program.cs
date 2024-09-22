@@ -43,7 +43,7 @@ class Program
         var silhouetteClusters = kMeans.getClusters();
         double silhouetteScore = SilhouetteScore.CalculateSilhouetteScore(silhouetteClusters);
 
-        Console.WriteLine($"Silhouette Score for K = {clusterCount}: {silhouetteScore}");
+        // Console.WriteLine($"Silhouette Score for K = {clusterCount}: {silhouetteScore}");
 
         double hypothesizedProbability = 0.25; // Valeur de probabilité sous H0 (hypothèse nulle)
         List<double[,]> transitionMatrixs = new List<double[,]>();
@@ -108,7 +108,7 @@ class Program
                 // printer.printArray(classificationProbabilities);
             }
 
-            printer.print2DArray(transitionMatrix);
+            // printer.print2DArray(transitionMatrix);
             transitionMatrixs.Add(transitionMatrix);
 
             Kolmogorov kolmogorov = new Kolmogorov(transitionMatrix);
@@ -116,20 +116,20 @@ class Program
             double[,] forecastMatrix = kolmogorov.PowerMatrix(5);
 
             // Afficher la matrice forecastMatrix
-            Console.WriteLine("Forecast Matrix : ");
-            printer.print2DArray(forecastMatrix);
+            // Console.WriteLine("Forecast Matrix : ");
+            // printer.print2DArray(forecastMatrix);
 
             // Vérifier la probabilité de transition de l'état 0 à l'état 1 en 2 étapes
             double multiStepsProbability = kolmogorov.GetTransitionProbability(0, 1, 5);
-            Console.WriteLine($"Probability of transition from 0 to 1 in 5 steps: {multiStepsProbability}");
+            // Console.WriteLine($"Probability of transition from 0 to 1 in 5 steps: {multiStepsProbability}");
 
             double verifiedProbability = kolmogorov.VerifyTransitionProbability(0, 1, 2, 3);
-            Console.WriteLine($"Verified probability of transition from 0 to 1 in 2 + 3 steps: {verifiedProbability}");
+            // Console.WriteLine($"Verified probability of transition from 0 to 1 in 2 + 3 steps: {verifiedProbability}");
         }
 
 
         /// etape 4
-        Console.WriteLine("=====================DEBUT=============================");
+        // Console.WriteLine("=====================DEBUT=============================");
         int[,] politics =
         {
             { 1, 1, 1, 1 },
@@ -140,10 +140,10 @@ class Program
 
 
         List<double[,]> politicMatrixs = new List<double[,]>();
-        for (int i = 0; i < transitionMatrixs.Count; i++)
-        {
-            printer.print2DArray(transitionMatrixs[i], $"transition matrix #{i}");
-        }
+        // for (int i = 0; i < transitionMatrixs.Count; i++)
+        // {
+        //     printer.print2DArray(transitionMatrixs[i], $"transition matrix #{i}");
+        // }
 
         for (int i = 0; i < politics.GetLength(0); i++)
         {
@@ -157,7 +157,7 @@ class Program
                 }
             }
 
-            printer.print2DArray(politic, $"politic-{i}");
+            // printer.print2DArray(politic, $"politic-{i}");
             politicMatrixs.Add(politic);
         }
 
@@ -180,11 +180,11 @@ class Program
                 int politicIndex = politics[i, j] - 1;
                 costTableValue.Add(costTable[politicIndex, j]);
             }
-            Console.WriteLine("-----------------------------");
+            // Console.WriteLine("-----------------------------");
            
             var pi = powerIteration.resolveByPuissance(politicMatrixs[i]);
             double cost = CostMean(pi, costTableValue.ToArray());
-            Console.WriteLine($"Politic {i} Cost = {CostMean(pi, costTableValue.ToArray())}");
+            // Console.WriteLine($"Politic {i} Cost = {CostMean(pi, costTableValue.ToArray())}");
             if (cost < minCost)
             {
                 minCost = cost;
@@ -193,8 +193,9 @@ class Program
 
         }
 
-        Console.WriteLine($"The best decision policy is Politic {bestPoliticIndex} with a minimum cost of {minCost}");
-
+        // Console.WriteLine($"The best decision policy is Politic {bestPoliticIndex} with a minimum cost of {minCost}");
+        Genetic genetic = new Genetic();
+        genetic.generatePopulation(10, 4);
     }
 
 
@@ -208,4 +209,6 @@ class Program
 
         return costMean;
     }
+    
+    
 }
