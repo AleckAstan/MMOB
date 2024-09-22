@@ -15,7 +15,7 @@ class Program
     }
 
     static bool PerformTTest(double observedProbability, double hypothesizedProbability, double stdDev, int sampleSize)
-    {
+    { 
         double tStatistic = (observedProbability - hypothesizedProbability) / (stdDev / Math.Sqrt(sampleSize));
 
         // Valeur critique pour un test t bilatéral (pour un certain degré de liberté et un niveau de signification)
@@ -163,7 +163,6 @@ class Program
 
         // Tableau des coûts (A1, A2, A3, A4) en fonction des états (E1, E2, E3, E4)
         double[,] costTable = new double[,]
-
         {
             // E1 (Démotivé), E2 (Plus ou moins motivé), E3 (Motivé), E4 (Très motivé)
             { 0, 0, 0, 0 }, // A1: Ne rien faire
@@ -193,7 +192,7 @@ class Program
             }
 
         }
-        
+
         Console.WriteLine($"The best decision policy is Politic {bestPoliticIndex} with a minimum cost of {minCost}");
 
     }
