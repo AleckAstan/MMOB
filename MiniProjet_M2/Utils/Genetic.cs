@@ -4,7 +4,7 @@ public class Genetic
 {
     static Printer printer = new Printer();
     static PowerIteration powerIteration = new PowerIteration();
-    static int PopulationSize = 10;
+    static int PopulationSize = 5;
     static int StateCount = 4;
     int ActionCount = 4;
     List<int[]> population = new List<int[]>();
@@ -30,6 +30,7 @@ public class Genetic
     {
         for (int gen = 0; gen < generations; gen++)
         {
+            printer.printMatrixList(this.population,$"population ${gen}");
             List<double> fitnessValues = EvaluateFitness(this.population);
             List<int[]> parents = SelectParents(this.population, fitnessValues);
             this.population = Crossover(parents);
@@ -87,7 +88,6 @@ public class Genetic
             population.Add(ind);
         }
 
-        EvaluateFitness(this.population);
         return population;
     }
 
@@ -97,6 +97,7 @@ public class Genetic
         foreach (var policy in population)
         {
             double cost = CalculateCost(policy);
+            Console.WriteLine($"coût de la politique {cost}");
             fitnessValues.Add(cost);
         }
 
@@ -124,6 +125,8 @@ public class Genetic
             double value = costTable[i, j];
             costTableValue.Add(value);
         }
+        
+        Console.WriteLine($"valeur de pi {string.Join(", " ,pi)}");
 
         return Cost(pi, costTableValue.ToArray());
     }
@@ -149,7 +152,9 @@ public class Genetic
         {
             int parent1Index = rand.Next(PopulationSize);
             int parent2Index = rand.Next(PopulationSize);
-
+            Console.WriteLine("TOURNOI-----------");
+            Console.WriteLine($"Parent 1 fitness-----------{fitnessValues[parent1Index]}");
+            Console.WriteLine($"Parent 2 fitness-----------{fitnessValues[parent2Index]}");
             // Choisir le meilleur parent
             if (fitnessValues[parent1Index] < fitnessValues[parent2Index])
             {
@@ -160,7 +165,7 @@ public class Genetic
                 parents.Add(population[parent2Index]);
             }
         }
-
+        printer.printMatrixList(parents, "Nouvelle parents apres tournoi");
         return parents;
     }
 
@@ -169,11 +174,15 @@ public class Genetic
         List<int[]> newPopulation = new List<int[]>();
         Random rand = new Random();
 
+        Console.WriteLine("CROSSOVER-----------");
         for (int i = 0; i < PopulationSize; i += 2)
         {
             int[] parent1 = parents[rand.Next(parents.Count)];
             int[] parent2 = parents[rand.Next(parents.Count)];
+            printer.printArray(parent1, $"Parent 1");
+            printer.printArray(parent2, $"Parent 2");
             int crossoverPoint = rand.Next(1, StateCount);
+            Console.WriteLine($"crossover point {crossoverPoint}");
 
             int[] child1 = new int[StateCount];
             int[] child2 = new int[StateCount];
@@ -192,23 +201,29 @@ public class Genetic
                     child2[j] = parent1[j];
                 }
             }
+            printer.printArray(child1, $"child1 1");
+            printer.printArray(child2, $"child2 2");
             newPopulation.Add(child1);
             newPopulation.Add(child2);
         }
-
+        Console.WriteLine("APRES CROSSOVER------------");
+        printer.printMatrixList(newPopulation, "Parent apres crossover");
         return newPopulation;
     }
 
     void Mutate(List<int[]> population)
     {
         Random rand = new Random();
-
+        Console.WriteLine("MUTATION---------------");
         for (int i = 0; i < PopulationSize; i++)
         {
             if (rand.NextDouble() < 0.1) // 10% de chance de mutation
             {
                 int mutationPoint = rand.Next(StateCount);
-                population[i][mutationPoint] = rand.Next(1, ActionCount + 1); // Modifier l'action
+                Console.WriteLine($"Indice de la valeur à muter---------------{mutationPoint}");
+                var value = rand.Next(1, ActionCount + 1);
+                Console.WriteLine($"Nouvelle valeur {value}");
+                population[i][mutationPoint] = value; // Modifier l'action
             }
         }
     }

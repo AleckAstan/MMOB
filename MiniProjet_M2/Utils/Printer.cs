@@ -55,4 +55,20 @@ public class Printer
 
         Console.WriteLine();
     }
+
+    public void printMatrixList(List<double[]> list, string title = "")
+    {
+        foreach (var el in list)
+        {
+            this.printArray(el,$"{title} 1 \t");
+        }
+    }
+    public void printMatrixList(List<int[]> list, string title = "")
+    {
+        Console.WriteLine($"{title}----------------------------------------------------");
+        foreach (var el in list)
+        {
+            this.printArray(el);
+        }
+    }
 }

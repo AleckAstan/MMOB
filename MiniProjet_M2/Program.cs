@@ -193,7 +193,7 @@ class Program
 
         }
         Genetic genetic = new Genetic(transitionMatrixs);
-        genetic.Evolve(50);
+        genetic.Evolve(3);
     }
 
 
